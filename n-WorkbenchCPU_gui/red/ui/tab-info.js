@@ -23,7 +23,7 @@ RED.sidebar.info = (function() {
 	content.style.paddingRight = "4px";
 
 	RED.sidebar.addTab("info",content);
-	$("#tab-info").html("<h3>Welcome</h3><p>Experimental n-Workbench-node for n-Blocks, to define graphically an embedded system firmware based on mbed libraries</p><p>Export will generate code to copy into the mbed IDE.</p><p>Warning this is work in progress!</p><h3>Server/Offline</h3><p>Can run on a hosted-server on in localhost, in the n-WorkbenchCPU_gui folder run index.html.</p><h3>Credits</h3><p>Teensy Audio Library and IBM</p><p>open source <a href=\"http://nodered.org/\" target=\"_blank\">Node-RED</a> project.</p>");
+	$("#tab-info").html("<h3>Welcome</h3><p>Experimental n-Workbench-node for n-Blocks, to define graphically an embedded system firmware based on mbed libraries</p><p>Export will generate code to copy into the mbed IDE.</p><p>Warning this is work in progress!</p><h3>Server/Offline</h3><p>Can run on a hosted-server, or in localhost. In the n-WorkbenchCPU_gui directory run index.html.</p><h3>Credits</h3><p>Teensy Audio Library and IBM</p><p>open source <a href=\"http://nodered.org/\" target=\"_blank\">Node-RED</a> project.</p>");
 
 	function jsonFilter(key,value) {
 		if (key === "") {
