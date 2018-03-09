@@ -1,0 +1,245 @@
+{
+    "Node Iterator": 12, 
+    "nBlockNode Connections": [
+        {
+            "source_output": 0, 
+            "target_node": "nBlockNode0_SUM", 
+            "source_node": "nBlockNode1_GPI", 
+            "target_input": 0
+        }, 
+        {
+            "source_output": 1, 
+            "target_node": "nBlockNode0_SUM", 
+            "source_node": "nBlockNode2_GPI", 
+            "target_input": 1
+        }, 
+        {
+            "source_output": 1, 
+            "target_node": "nBlockNode4_SUM", 
+            "source_node": "nBlockNode3_ADC", 
+            "target_input": 0
+        }, 
+        {
+            "source_output": 2, 
+            "target_node": "nBlockNode4_SUM", 
+            "source_node": "nBlockNode3_ADC", 
+            "target_input": 1
+        }, 
+        {
+            "source_output": 0, 
+            "target_node": "nBlockNode6_PWM", 
+            "source_node": "nBlockNode0_SUM", 
+            "target_input": 0
+        }, 
+        {
+            "source_output": 0, 
+            "target_node": "nBlockNode7_Toggle", 
+            "source_node": "nBlockNode0_SUM", 
+            "target_input": 0
+        }, 
+        {
+            "source_output": 1, 
+            "target_node": "nBlockNode5_GPO", 
+            "source_node": "nBlockNode7_Toggle", 
+            "target_input": 0
+        }, 
+        {
+            "source_output": 0, 
+            "target_node": "nBlockNode6_PWM", 
+            "source_node": "nBlockNode4_SUM", 
+            "target_input": 3
+        }, 
+        {
+            "source_output": 1, 
+            "target_node": "nBlockNode9_GPO", 
+            "source_node": "nBlockNode1_GPI", 
+            "target_input": 0
+        }, 
+        {
+            "source_output": 0, 
+            "target_node": "nBlockNode9_GPO", 
+            "source_node": "nBlockNode2_GPI", 
+            "target_input": 0
+        }, 
+        {
+            "source_output": 0, 
+            "target_node": "nBlockNode10_SUM", 
+            "source_node": "nBlockNode0_SUM", 
+            "target_input": 0
+        }, 
+        {
+            "source_output": 0, 
+            "target_node": "nBlockNode10_SUM", 
+            "source_node": "nBlockNode4_SUM", 
+            "target_input": 1
+        }, 
+        {
+            "source_output": 0, 
+            "target_node": "nBlockNode6_PWM", 
+            "source_node": "nBlockNode10_SUM", 
+            "target_input": 1
+        }, 
+        {
+            "source_output": 1, 
+            "target_node": "nBlockNode0_SUM", 
+            "source_node": "nBlockNode11_ADC", 
+            "target_input": 0
+        }
+    ], 
+    "nBlockNodes": [
+        {
+            "layer": 1, 
+            "name": "nBlockNode3_ADC", 
+            "template": {
+                "inputs": 0, 
+                "name": "ADC", 
+                "outputs": 4
+            }, 
+            "pos": [
+                -9.418682098388672, 
+                -34.29551696777344, 
+                0.0
+            ]
+        }, 
+        {
+            "layer": 1, 
+            "name": "nBlockNode2_GPI", 
+            "template": {
+                "inputs": 0, 
+                "name": "GPI", 
+                "outputs": 2
+            }, 
+            "pos": [
+                -53.55470275878906, 
+                -3.7072601318359375, 
+                0.0
+            ]
+        }, 
+        {
+            "layer": 1, 
+            "name": "nBlockNode5_GPO", 
+            "template": {
+                "inputs": 1, 
+                "name": "GPO", 
+                "outputs": 0
+            }, 
+            "pos": [
+                122.6610336303711, 
+                44.87086486816406, 
+                0.0
+            ]
+        }, 
+        {
+            "layer": 3, 
+            "name": "nBlockNode11_ADC", 
+            "template": {
+                "inputs": 0, 
+                "name": "ADC", 
+                "outputs": 4
+            }, 
+            "pos": [
+                -50.93500518798828, 
+                -4.2236328125, 
+                50.0
+            ]
+        }, 
+        {
+            "layer": 3, 
+            "name": "nBlockNode10_SUM", 
+            "template": {
+                "inputs": 2, 
+                "name": "SUM", 
+                "outputs": 1
+            }, 
+            "pos": [
+                64.91971588134766, 
+                5.6786041259765625, 
+                50.0
+            ]
+        }, 
+        {
+            "layer": 1, 
+            "name": "nBlockNode9_GPO", 
+            "template": {
+                "inputs": 1, 
+                "name": "GPO", 
+                "outputs": 0
+            }, 
+            "pos": [
+                34.53387451171875, 
+                13.089767456054688, 
+                0.0
+            ]
+        }, 
+        {
+            "layer": 2, 
+            "name": "nBlockNode7_Toggle", 
+            "template": {
+                "inputs": 1, 
+                "name": "Toggle", 
+                "outputs": 2
+            }, 
+            "pos": [
+                65.22875213623047, 
+                43.10823059082031, 
+                25.0
+            ]
+        }, 
+        {
+            "layer": 2, 
+            "name": "nBlockNode4_SUM", 
+            "template": {
+                "inputs": 2, 
+                "name": "SUM", 
+                "outputs": 1
+            }, 
+            "pos": [
+                45.279205322265625, 
+                -30.915115356445312, 
+                25.0
+            ]
+        }, 
+        {
+            "layer": 1, 
+            "name": "nBlockNode6_PWM", 
+            "template": {
+                "inputs": 4, 
+                "name": "PWM", 
+                "outputs": 0
+            }, 
+            "pos": [
+                122.34832763671875, 
+                11.167373657226562, 
+                0.0
+            ]
+        }, 
+        {
+            "layer": 2, 
+            "name": "nBlockNode0_SUM", 
+            "template": {
+                "inputs": 2, 
+                "name": "SUM", 
+                "outputs": 1
+            }, 
+            "pos": [
+                10.522842407226562, 
+                21.352096557617188, 
+                25.0
+            ]
+        }, 
+        {
+            "layer": 1, 
+            "name": "nBlockNode1_GPI", 
+            "template": {
+                "inputs": 0, 
+                "name": "GPI", 
+                "outputs": 2
+            }, 
+            "pos": [
+                -54.37891387939453, 
+                31.449005126953125, 
+                0.0
+            ]
+        }
+    ]
+}
