@@ -1,0 +1,41 @@
+{
+    "Node Iterator": 2, 
+    "nBlockNode Connections": [
+        {
+            "source_output": 0, 
+            "target_node": "nBlockNode1_nGPO", 
+            "source_node": "nBlockNode0_nGPI", 
+            "target_input": 0
+        }
+    ], 
+    "nBlockNodes": [
+        {
+            "layer": 1, 
+            "name": "nBlockNode1_nGPO", 
+            "template": {
+                "inputs": 1, 
+                "name": "nGPO", 
+                "outputs": 0
+            }, 
+            "pos": [
+                70.16218566894531, 
+                74.84617614746094, 
+                0.0
+            ]
+        }, 
+        {
+            "layer": 1, 
+            "name": "nBlockNode0_nGPI", 
+            "template": {
+                "inputs": 0, 
+                "name": "nGPI", 
+                "outputs": 2
+            }, 
+            "pos": [
+                -43.98956298828125, 
+                -50.137725830078125, 
+                0.0
+            ]
+        }
+    ]
+}
