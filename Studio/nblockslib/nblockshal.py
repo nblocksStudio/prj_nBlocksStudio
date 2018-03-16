@@ -64,6 +64,7 @@ def win32_serial_ports():
 # Checks if Myo is definitely available
 # checking simultaneously the installed port and available ports
 def MyoPresent():
+	print "Checking myo (platform: "+str(sys.platform)+")"
 	try:
 		if sys.platform=='win32': # windows
 			myo_port = win32_find_myo_port()
@@ -94,7 +95,7 @@ def CreateMyo():
 	global myo
 	
 	myo_port = MyoPresent()
-	if myo_port is not None:
+	if (myo_port is not None) and (myo_port is not False):
 		try:
 			myo = Myo(cls=None, tty=myo_port)
 			if myo.connect() is True:
