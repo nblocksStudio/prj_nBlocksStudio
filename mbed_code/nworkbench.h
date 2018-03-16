@@ -6,6 +6,7 @@
 
 extern Serial pc;
 extern fifo inputs[8];
+extern fifo adcs[4];
 
 void SetupWorkbench(void);
 void setOutput(uint32_t outputNumber, uint32_t value);

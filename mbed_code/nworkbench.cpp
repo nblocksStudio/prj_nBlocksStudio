@@ -13,7 +13,7 @@
 
   // OUTPUTS
   DigitalOut output0(p12);
-  DigitalOut output1(p11);  .
+  DigitalOut output1(p11);
 
   // PWM
   PwmOut pwm0(p21);
