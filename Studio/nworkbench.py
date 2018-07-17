@@ -50,6 +50,7 @@ DIALOG_GENERIC = 3
 DIALOG_LOAD = 4
 DIALOG_NEW = 5
 DIALOG_START = 6
+DIALOG_PARAMETERS = 7
 
 def setGeomTexture(Model, geomName, texture):
 	texAttrib = TextureAttrib.make(texture)
@@ -85,6 +86,7 @@ class nWorkbench(ShowBase):
 	# Blocks
 	last_picked = None # raypicking = just under the cursor
 	last_selected = None # actually selected using mouse click
+	last_edited = None  # actually selected for editting using right mouse click
 	to_be_placed = None # new block to place
 	
 	# Connection edges
@@ -243,6 +245,11 @@ class nWorkbench(ShowBase):
 		self.GUI['ProjLabel'] = DirectLabel(parent=self.GUI['ProjFrame'], text="", scale=1, pos=(0.65,0,-1.5), text_fg=(1,1,1,1), text_align=TextNode.ALeft)
 
 		self.GUI['Menus'] = {}
+		
+		# Helper interface
+		
+		self.GUI['PinHelper'] = DirectLabel(parent=self.MainScreen['center'], text="X", text_fg=(1,1,1,1), text_mayChange=True, frameColor=(0.3,0.3,0.3,0.5), pad=(1.0,0.5), scale=0.05, pos=(0,0,0))
+		self.GUI['PinHelper'].hide()
 
 		# Main menu
 		self.HUD_BuildMenu(self.MainScreen['topleft'], 'MainMenu', [0.2,0,-0.05], [
@@ -317,6 +324,25 @@ class nWorkbench(ShowBase):
 		self.GUI['DialogOKLabel'] = DirectLabel(parent=self.GenericDialogOK, text="", text_fg=(1,1,1,1), scale=0.05, pos=(0,0,0), relief=None)
 		self.GUI['DialogOK'] = DirectButton(text="OK", scale=0.07, pos=(0,0,-0.2), parent=self.GenericDialogOK, frameSize=(-2, 2, -0.45, 0.9), frameColor=self.GUIStyle['buttoncolor'], command=self.Act_DialogOK)
 		self.GenericDialogOK.hide()
+
+		# --- Block Edit Dialog
+		self.NodeEditDialog = aspect2d.attachNewNode("NodeEditDialogScreen")
+		
+		self.GUI['NodeEditDialogFrame'] = DirectFrame(scale=0.06, pos=(0,0,0), parent=self.NodeEditDialog, relief=None)
+		self.HUD_BuildFrame(self.GUI['NodeEditDialogFrame'], [32,21], 1.0).setPos(-16,0,10.0)
+
+		p_i = 0
+		self.GUI['NodeParamLabel'] = {}
+		self.GUI['NodeParamEdit'] = {}
+		while (p_i < 4):
+			self.GUI['NodeParamLabel'][p_i] = DirectLabel(parent=self.NodeEditDialog, text="", text_fg=(1,1,1,1), text_align=TextNode.ALeft, scale=0.07, pos=(-0.7,0,0.46 - p_i*0.25), relief=None)
+			self.GUI['NodeParamEdit'][p_i]  = DirectEntry(parent=self.NodeEditDialog, initialText='', scale=0.07, width=20, pos=(-0.7,0, 0.36 - p_i*0.25), frameColor=(1,1,1,0.7))
+			p_i += 1
+
+		self.GUI['NodeEditDialogOK'] = DirectButton(text="OK", scale=0.07, pos=(-0.55,0,-0.55), parent=self.NodeEditDialog, frameSize=(-2, 2, -0.45, 0.9), frameColor=self.GUIStyle['buttoncolor'], command=self.Act_NodeEditDialogOK)
+		self.GUI['NodeEditDialogCancel'] = DirectButton(text="Cancel", scale=0.07, pos=(-0.2,0,-0.55), parent=self.NodeEditDialog, frameSize=(-2, 2, -0.45, 0.9), frameColor=self.GUIStyle['buttoncolor'], command=self.Act_NodeEditDialogCancel)
+		self.GUI['NodeEditDialogODelete'] = DirectButton(text="Delete Block", scale=0.07, pos=(0.5,0,-0.55), parent=self.NodeEditDialog, frameSize=(-4, 4, -0.45, 0.9), frameColor=self.GUIStyle['buttoncolor'], command=self.Act_NodeEditDialogDelete)
+		self.NodeEditDialog.hide()
 		
 		# --- New Project screen
 		self.NewScreen = self.aspect2d.attachNewNode("NewScreen")
@@ -351,9 +377,9 @@ class nWorkbench(ShowBase):
 		
 		
 		# ========================  Key events
-		self.accept('x', self.ExportToFile, [])
+		#self.accept('x', self.ExportToFile, [])
 
-		self.accept('w', base.toggleWireframe)
+		#self.accept('w', base.toggleWireframe)
 		
 		self.accept('0', self.SetLayer, [0])
 		self.accept('1', self.SetLayer, [1])
@@ -395,12 +421,7 @@ class nWorkbench(ShowBase):
 		self.SetCamType(2)
 		self.SetLayer(1)
 		self.ShowHelperLine((0,0,0), (1,0,0), False)
-		#self.Act_NewProject()
-		
-		#self.I2d_HideMainWindow()
-		#self.system_mode = MODE_DIALOG 
-		#self.dialog_mode = DIALOG_START
-		#self.StartScreen.show()
+
 		self.I2d_ShowStartScreen()
 		
 		
@@ -418,7 +439,7 @@ class nWorkbench(ShowBase):
 		if has_to_resize is True:
 			#self.win.setSize(self.win_width, self.win_height)
 			pass
-		
+			
 		if self.win_height > self.win_width: # portrait window, width defines sized
 			top = (self.win_height*1.0) / (self.win_width*1.0)
 			left = -1
@@ -437,6 +458,8 @@ class nWorkbench(ShowBase):
 		self.LoadScreen.setScale(ratio)
 		self.QuitScreen.setScale(ratio)
 		self.StartScreen.setScale(ratio)
+		
+		self.win_proportion = (self.win_width*1.0) / (self.win_height*1.0)
 		
 		#print "Resize: "+str([self.win_width, self.win_height])+" TopLeft="+str([left,top])+" Ratio="+str(ratio)
 
@@ -722,7 +745,10 @@ class nWorkbench(ShowBase):
 						conpick = None
 					
 					if curpick != self.last_picked:
+						if self.last_picked is not None:
+							self.last_picked.clearColor()
 						self.last_picked = curpick
+						self.ShowHelperText(curpick, [x, y])
 						
 					if conpick != self.last_conn_picked:
 						print "conn="+str(conpick)
@@ -776,6 +802,23 @@ class nWorkbench(ShowBase):
 				self.last_selected.setTag('floor', str(self.current_floor))
 				
 			self.GUI['FloorLabel']['text'] = str(lnum)
+			
+	def ShowHelperText(self, conn_object, cursor):
+		if (conn_object is not False) and (conn_object is not None) and (conn_object.getTag('type') == 'ConnPoint'):
+			dir = conn_object.getTag('dir')
+			num = int(conn_object.getTag('num'))
+			conn_object.setColor(1,1,0,1)
+			#print "wp="+str(self.win_proportion)
+			try:
+				self.GUI['PinHelper']['text'] = conn_object.getParent().getPythonTag('savable')['template']['labels'][dir][num]
+				self.GUI['PinHelper'].resetFrameSize()
+				self.GUI['PinHelper'].setPos(cursor[0]*self.win_proportion+0.15+0.01*len(self.GUI['PinHelper']['text']), 0, cursor[1]+0.05)
+				self.GUI['PinHelper'].show()
+			except Exception as e:
+				#print "Error: "+str(e)
+				self.GUI['PinHelper'].hide()
+		else:
+			self.GUI['PinHelper'].hide()
 	
 	def ShowHelperLine(self,from_point, to_point, visible):
 		vec = (LPoint3f(to_point)-LPoint3f(from_point))
@@ -912,10 +955,29 @@ class nWorkbench(ShowBase):
 		if down is True:
 			if (self.last_picked is not None) and (self.last_picked.getTag('type') == 'Block'): # right-clicked a block
 				
-				self.RemoveBlockNode(self.last_picked.getParent())
+				self.last_edited = self.last_picked
 				self.last_picked = None
 				self.last_selected = None
 				self.last_conn_selected = None
+				
+				params = self.last_edited.getParent().getPythonTag('savable')['template']['parameters']
+				p_i = 0
+				while (p_i < len(params)):
+					self.GUI['NodeParamLabel'][p_i]['text'] = params[p_i]['name']
+					self.GUI['NodeParamLabel'][p_i].show()
+					self.GUI['NodeParamEdit'][p_i].enterText(str(params[p_i]['value']))
+					self.GUI['NodeParamEdit'][p_i].show()
+					p_i += 1
+				while (p_i < 4):
+					self.GUI['NodeParamLabel'][p_i].hide()
+					self.GUI['NodeParamEdit'][p_i].hide()
+					p_i += 1
+				
+				self.I2d_HideMainWindow()
+				self.NodeEditDialog.show()
+				self.system_mode = MODE_DIALOG
+				self.dialog_mode = DIALOG_PARAMETERS
+				
 				
 				#self.last_picked.getParent().setRenderModeWireframe() 
 				#self.last_picked.getParent().setRenderModeFilledWireframe( (1,1,0,0.5) ) 
@@ -941,6 +1003,9 @@ class nWorkbench(ShowBase):
 		# Params
 		blockItem['inputs'] = int(blockItem['inputs'])
 		blockItem['outputs'] = int(blockItem['outputs'])
+		if ('parameters' not in blockItem) or (type(blockItem['parameters']) is not list):
+			blockItem['parameters'] = []
+		
 		conndist = 3.5 # distance between connections
 		bsize = blockItem['inputs']
 		if blockItem['outputs'] > bsize:
@@ -1111,6 +1176,13 @@ class nWorkbench(ShowBase):
 		self.dialog_mode = DIALOG_MAIN
 		self.to_be_placed = self.MakeBlockNode(blockItem)
 
+	def Act_RemoveSelectedBlock(self):
+		self.RemoveBlockNode(self.last_edited.getParent())
+		self.last_edited = None
+		self.last_picked = None
+		self.last_selected = None
+		self.last_conn_selected = None
+
 	def Act_LoadList(self):
 		self.I2d_HideMainWindow()
 		plist = nblocksfile.ListProjects()
@@ -1193,6 +1265,39 @@ class nWorkbench(ShowBase):
 		self.Act_CancelDialog()
 	def Act_DialogOK(self):
 		self.GenericDialogOK.hide()
+		self.I2d_ShowMainWindow()
+		self.system_mode = MODE_NORMAL
+		self.dialog_mode = DIALOG_MAIN
+		
+	def Act_NodeEditDialogOK(self):
+		m = self.last_edited.getParent()
+		savable = m.getPythonTag('savable')
+		plen = len(savable['template']['parameters'])
+		p_i = 0
+		while (p_i < plen):
+			try:
+				val = self.GUI['NodeParamEdit'][p_i].get(True) # True removes formatting characters
+				if (savable['template']['parameters'][p_i]['type'] == 'int'):
+					val = int(val)
+				savable['template']['parameters'][p_i]['value'] = val
+			except: pass
+			p_i += 1
+		m.setPythonTag('savable', savable)		
+		self.last_edited = None
+		self.NodeEditDialog.hide()
+		self.I2d_ShowMainWindow()
+		self.system_mode = MODE_NORMAL
+		self.dialog_mode = DIALOG_MAIN
+		
+	def Act_NodeEditDialogCancel(self):
+		self.NodeEditDialog.hide()
+		self.I2d_ShowMainWindow()
+		self.system_mode = MODE_NORMAL
+		self.dialog_mode = DIALOG_MAIN
+		
+	def Act_NodeEditDialogDelete(self):
+		self.Act_RemoveSelectedBlock()
+		self.NodeEditDialog.hide()
 		self.I2d_ShowMainWindow()
 		self.system_mode = MODE_NORMAL
 		self.dialog_mode = DIALOG_MAIN
@@ -1325,7 +1430,23 @@ class nWorkbench(ShowBase):
 				while rlen > 0:
 					outstr += ' '
 					rlen -= 1
-			outstr += "nb_"+str(enodeinfo['name'])+";\n"
+			outstr += "nb_"+str(enodeinfo['name'])
+			# Parameters?
+			params_str = ''
+			p_i = 0
+			params = enodeinfo['template']['parameters']
+			plen = len(params)
+			if plen > 0:
+				while (p_i < plen):
+					if (params_str != ''):
+						params_str += ','
+					if (params[p_i]['type'] == 'string'):
+						params_str += '"'+str(params[p_i]['value'])+'"'
+					else:
+						params_str += str(params[p_i]['value'])
+					p_i += 1
+				outstr += '('+params_str+')'
+			outstr += ";\n"
 
 		outstr += "\n// -*-*- List of connection objects -*-*-\n"
 
