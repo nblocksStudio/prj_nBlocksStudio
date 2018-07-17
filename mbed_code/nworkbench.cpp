@@ -2,11 +2,11 @@
 
 #ifdef TARGET_LPC1768
   //Serial pc(USBTX, USBRX);
-  Serial pc(p26, p25);
+  //Serial pc(p26, p25);
 
   // INPUTS
-  DigitalIn input0(p28);
-  DigitalIn input1(p27);
+  //DigitalIn input0(p28);
+  //DigitalIn input1(p27);
 
   // ADC
   AnalogIn adc0(p15);
@@ -20,7 +20,7 @@
 #endif
 
 #ifdef TARGET_LPC11U35_501
-  Serial pc(P0_19, P0_18);
+  //Serial pc(P0_19, P0_18);
 
   // INPUTS
   DigitalIn input0(P0_5);
@@ -123,19 +123,16 @@ void propagateTick(void) {
             enode->step();
             enode = (nBlockNode *)(enode->getNext());
         }
-
         __propagating = 0;
-
-        //pc.printf("-\n");
     }
 }
 void inputTick(void) {
     // --- INPUT 0 ---
-    if ((input0_old == 0) && (input0 != 0)) { inputs[0].put(1);  input0_old = input0; pc.printf("i0\n"); } // rising edge
-    if ((input0_old != 0) && (input0 == 0)) { inputs[0].put(0);  input0_old = input0; } // falling edge
+    //if ((input0_old == 0) && (input0 != 0)) { inputs[0].put(1);  input0_old = input0; } // rising edge
+    //if ((input0_old != 0) && (input0 == 0)) { inputs[0].put(0);  input0_old = input0; } // falling edge
     // --- INPUT 1 ---
-    if ((input1_old == 0) && (input1 != 0)) { inputs[1].put(1);  input1_old = input1; pc.printf("i1\n"); } // rising edge
-    if ((input1_old != 0) && (input1 == 0)) { inputs[1].put(0);  input1_old = input1; } // falling edge
+    //if ((input1_old == 0) && (input1 != 0)) { inputs[1].put(1);  input1_old = input1; } // rising edge
+    //if ((input1_old != 0) && (input1 == 0)) { inputs[1].put(0);  input1_old = input1; } // falling edge
 
     // --- ADC 0 ---
     uint32_t tmp;
@@ -158,8 +155,8 @@ void setPwm(uint32_t outputNumber, uint32_t value) {
 
 
 void SetupWorkbench(void) {
-    if (input0 == 0) input0_old = 1; else input0_old = 0; // make sure we start firing the initial state
-    if (input1 == 0) input1_old = 1; else input1_old = 0;
+    //if (input0 == 0) input0_old = 1; else input0_old = 0; // make sure we start firing the initial state
+    //if (input1 == 0) input1_old = 1; else input1_old = 0;
     adc0_old = 1; // impossible value, since the mask for this is 0xFFFF0000, so we fire the first value
 
     pwm0.period(0.001);
