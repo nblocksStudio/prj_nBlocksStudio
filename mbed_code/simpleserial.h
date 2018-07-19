@@ -4,19 +4,13 @@
 #include "mbed.h"
 #include "nworkbench.h"
 
-class nBlock_SimpleSerial: public nBlockNode {
+class nBlock_SimpleSerial: public nBlockSimpleNode<1> {
 public:
     nBlock_SimpleSerial(PinName pinTX, PinName pinRX);
-    uint32_t outputAvailable(uint32_t outputNumber);
-    uint32_t readOutput(uint32_t outputNumber);
     void triggerInput(uint32_t inputNumber, uint32_t value);
-    void step(void);
+    void endFrame(void);
 private:
-    int _out;
     Serial _ser;
 };
-
-
-
 
 #endif

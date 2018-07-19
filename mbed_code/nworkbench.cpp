@@ -33,12 +33,9 @@
   // PWM P0_12
 #endif
 
-fifo inputs[8];
 fifo adcs[4];
 
 // INTERNALS
-uint32_t input0_old;
-uint32_t input1_old;
 uint32_t adc0_old;
 
 Ticker InputTicker;
@@ -51,7 +48,7 @@ nBlockConnection * __first_connection = 0;
 nBlockConnection * __last_connection = 0;
 uint32_t __propagating = 0;
 
-// NBLOCK BASIC TEMPLATE
+// NBLOCK NODE BASIC CLASS
 nBlockNode::nBlockNode(void) {
     // placeholder
     if (__firstNode == 0) __firstNode = this;
@@ -64,6 +61,8 @@ uint32_t nBlockNode::outputAvailable(uint32_t outputNumber) { return 0; }
 uint32_t nBlockNode::readOutput(uint32_t outputNumber) { return 0; }
 void nBlockNode::triggerInput(uint32_t inputNumber, uint32_t value) { return; }
 void nBlockNode::step(void) { return; }
+
+
 
 
 // NBLOCKCONNECTION

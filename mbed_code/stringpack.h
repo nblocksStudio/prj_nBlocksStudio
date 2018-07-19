@@ -7,20 +7,14 @@
 // temporary buffer used by sprintf
 extern char _stringpack_strbuf[256];
 
-class nBlock_StringPack: public nBlockNode {
+class nBlock_StringPack: public nBlockSimpleNode<1> {
 public:
     nBlock_StringPack(const char * formatString);
-    uint32_t outputAvailable(uint32_t outputNumber);
-    uint32_t readOutput(uint32_t outputNumber);
     void triggerInput(uint32_t inputNumber, uint32_t value);
-    void step(void);
+    void endFrame(void);
 private:
     fifo internal_fifo;
-    uint32_t _available;
     const char * _format;
 };
-
-
-
 
 #endif
