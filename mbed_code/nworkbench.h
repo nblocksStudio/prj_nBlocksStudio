@@ -4,12 +4,9 @@
 #include "mbed.h"
 #include "fifo.h"
 
-extern Serial pc;
-extern fifo inputs[8];
-extern fifo adcs[4];
 
 void SetupWorkbench(void);
-void setOutput(uint32_t outputNumber, uint32_t value);
+
 void setPwm(uint32_t outputNumber, uint32_t value);
 
 
@@ -88,12 +85,6 @@ public:
     void triggerInput(uint32_t inputNumber, uint32_t value);
     void step(void);
 };
-
-
-uint32_t check_fifo(void);
-uint32_t get_fifo(void);
-
-
 
 
 #endif

@@ -1,44 +1,16 @@
 #include "nworkbench.h"
 
 #ifdef TARGET_LPC1768
-  //Serial pc(USBTX, USBRX);
-  //Serial pc(p26, p25);
-
-  // INPUTS
-  //DigitalIn input0(p28);
-  //DigitalIn input1(p27);
-
-  // ADC
-  AnalogIn adc0(p15);
-
-  // OUTPUTS
-  DigitalOut output0(p12);
-  DigitalOut output1(p11);
-
   // PWM
   PwmOut pwm0(p21);
 #endif
 
 #ifdef TARGET_LPC11U35_501
-  //Serial pc(P0_19, P0_18);
-
-  // INPUTS
-  DigitalIn input0(P0_5);
-  DigitalIn input1(P0_4);
-
-  // OUTPUTS
-  DigitalOut output0(P0_8);
-  DigitalOut output1(P0_7);
 
   // PWM P0_12
 #endif
 
-fifo adcs[4];
 
-// INTERNALS
-uint32_t adc0_old;
-
-Ticker InputTicker;
 
 Ticker PropagateTicker;
 
@@ -125,26 +97,8 @@ void propagateTick(void) {
         __propagating = 0;
     }
 }
-void inputTick(void) {
-    // --- INPUT 0 ---
-    //if ((input0_old == 0) && (input0 != 0)) { inputs[0].put(1);  input0_old = input0; } // rising edge
-    //if ((input0_old != 0) && (input0 == 0)) { inputs[0].put(0);  input0_old = input0; } // falling edge
-    // --- INPUT 1 ---
-    //if ((input1_old == 0) && (input1 != 0)) { inputs[1].put(1);  input1_old = input1; } // rising edge
-    //if ((input1_old != 0) && (input1 == 0)) { inputs[1].put(0);  input1_old = input1; } // falling edge
 
-    // --- ADC 0 ---
-    uint32_t tmp;
-    tmp = adc0.read_u16();
-    tmp = (tmp << 16) & 0xFFFF0000;
-    if (adc0_old != tmp) { adcs[0].put(tmp);  adc0_old = tmp; } // rising edge
 
-}
-
-void setOutput(uint32_t outputNumber, uint32_t value) {
-    if (outputNumber == 0) { if (value == 0) output0 = 0; else output0 = 1; }
-    if (outputNumber == 1) { if (value == 0) output1 = 0; else output1 = 1; }
-}
 void setPwm(uint32_t outputNumber, uint32_t value) {
     float tmp;
     tmp = value;
@@ -154,13 +108,9 @@ void setPwm(uint32_t outputNumber, uint32_t value) {
 
 
 void SetupWorkbench(void) {
-    //if (input0 == 0) input0_old = 1; else input0_old = 0; // make sure we start firing the initial state
-    //if (input1 == 0) input1_old = 1; else input1_old = 0;
-    adc0_old = 1; // impossible value, since the mask for this is 0xFFFF0000, so we fire the first value
 
     pwm0.period(0.001);
 
-    InputTicker.attach(&inputTick, 0.001);
     PropagateTicker.attach(&propagateTick, 0.001);
 }
 

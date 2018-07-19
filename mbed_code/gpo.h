@@ -8,11 +8,10 @@
 
 class nBlock_GPO: public nBlockNode {
 public:
-    nBlock_GPO(void);
+    nBlock_GPO(PinName pinOut);
     void triggerInput(uint32_t inputNumber, uint32_t value);
-    void step(void);
 private:
-    uint32_t output_offset;
+    DigitalOut _out;
 };
 
 

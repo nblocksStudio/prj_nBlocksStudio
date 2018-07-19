@@ -4,14 +4,12 @@
 #include "mbed.h"
 #include "nworkbench.h"
 
-class nBlock_ADC: public nBlockNode {
+class nBlock_ADC: public nBlockSimpleNode<1> {
 public:
-    nBlock_ADC(void);
-    uint32_t outputAvailable(uint32_t outputNumber);
-    uint32_t readOutput(uint32_t outputNumber);
-    void step(void);
+    nBlock_ADC(PinName pinAdc);
+    void triggerInput(uint32_t inputNumber, uint32_t value);
 private:
-    uint32_t input_offset;
+    AnalogIn _adc;
 };
 
 
