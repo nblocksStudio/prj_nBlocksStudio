@@ -6,11 +6,12 @@
 
 class nBlock_PWM: public nBlockNode {
 public:
-    nBlock_PWM(void);
+    nBlock_PWM(PinName pinPwm);
     void triggerInput(uint32_t inputNumber, uint32_t value);
     void step(void);
 private:
-    uint32_t output_offset;
+    PwmOut _pwm;
+    uint32_t duty_int;
 };
 
 

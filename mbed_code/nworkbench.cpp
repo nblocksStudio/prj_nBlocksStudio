@@ -1,13 +1,11 @@
 #include "nworkbench.h"
 
 #ifdef TARGET_LPC1768
-  // PWM
-  PwmOut pwm0(p21);
+
 #endif
 
 #ifdef TARGET_LPC11U35_501
 
-  // PWM P0_12
 #endif
 
 
@@ -64,18 +62,6 @@ uint32_t nBlockConnection::getNext(void) {
 }
 
 
-
-// DUMMY
-nBlock_Dummy::nBlock_Dummy(void) {
-  return;
-}
-uint32_t nBlock_Dummy::outputAvailable(uint32_t outputNumber){return 0;}
-uint32_t nBlock_Dummy::readOutput(uint32_t outputNumber){return 0;}
-void nBlock_Dummy::triggerInput(uint32_t inputNumber, uint32_t value){return;}
-void nBlock_Dummy::step(void) { return; }
-
-
-
 ///////////////////
 void propagateTick(void) {
     nBlockConnection * econn;
@@ -98,18 +84,7 @@ void propagateTick(void) {
     }
 }
 
-
-void setPwm(uint32_t outputNumber, uint32_t value) {
-    float tmp;
-    tmp = value;
-    tmp = tmp / 0xFFFFFFFF;
-    if (outputNumber == 0) pwm0.write(tmp);
-}
-
-
 void SetupWorkbench(void) {
-
-    pwm0.period(0.001);
 
     PropagateTicker.attach(&propagateTick, 0.001);
 }

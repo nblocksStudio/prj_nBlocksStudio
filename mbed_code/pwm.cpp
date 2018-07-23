@@ -1,11 +1,21 @@
 #include "pwm.h"
 
 /// GPO
-nBlock_PWM::nBlock_PWM(void) {
-    output_offset = 0;
+nBlock_PWM::nBlock_PWM(PinName pinPwm): _pwm(pinPwm) {
+    duty_int = 0;
+    _pwm.period(0.001);
+    _pwm.write(0);
     return;
 }
 void nBlock_PWM::triggerInput(uint32_t inputNumber, uint32_t value) {
-    setPwm(output_offset*8 + inputNumber, value);
+    // Stores the duty cycle we would like to use
+    // when updating in the end of this frame
+    duty_int = value;
 }
-void nBlock_PWM::step(void) { return; }
+void nBlock_PWM::step(void) {
+    float tmp;
+    tmp = (duty_int & 0x0000FFFF);
+    tmp = tmp / 0x0000FFFF;
+    _pwm.write(tmp);
+    return;
+}
