@@ -13,6 +13,7 @@
 import sys
 import os
 import json
+import copy
 from math import sin, cos, radians
 from tkinter import TclError
 
@@ -331,18 +332,37 @@ class nWorkbench(ShowBase):
 		self.GUI['NodeEditDialogFrame'] = DirectFrame(scale=0.06, pos=(0,0,0), parent=self.NodeEditDialog, relief=None)
 		self.HUD_BuildFrame(self.GUI['NodeEditDialogFrame'], [32,21], 1.0).setPos(-16,0,10.0)
 
+		# Paremeters
 		p_i = 0
 		self.GUI['NodeParamLabel'] = {}
 		self.GUI['NodeParamEdit'] = {}
+		self.GUI['NodeParamCheck'] = {}
+		self.GUI['NodeParamOption'] = {}
 		while (p_i < 4):
 			self.GUI['NodeParamLabel'][p_i] = DirectLabel(parent=self.NodeEditDialog, text="", text_fg=(1,1,1,1), text_align=TextNode.ALeft, scale=0.07, pos=(-0.7,0,0.46 - p_i*0.25), relief=None)
+			# Text parameter
 			self.GUI['NodeParamEdit'][p_i]  = DirectEntry(parent=self.NodeEditDialog, initialText='', scale=0.07, width=20, pos=(-0.7,0, 0.36 - p_i*0.25), frameColor=(1,1,1,0.7))
+			self.GUI['NodeParamEdit'][p_i].hide()
+			# Checkbox parameter
+			self.GUI['NodeParamCheck'][p_i]  = DirectCheckButton(parent=self.NodeEditDialog, text='False', scale=0.07, pos=(0.0,0, 0.36 - p_i*0.25), pad=(1,0), relief=None, command=self.Act_ToggleTrueFalseCheckbox)
+			self.GUI['NodeParamCheck'][p_i]['extraArgs'] = [self.GUI['NodeParamCheck'][p_i]]
+			self.GUI['NodeParamCheck'][p_i].hide()
+			# Option list
+			self.GUI['NodeParamOption'][p_i] = DirectButton(parent=self.NodeEditDialog, text="Selected Option", text_fg=(0,0,0,1), scale=0.07, pos=(0.0,0, 0.36 - p_i*0.25), frameSize=(-10,10,-0.6,1), frameColor=self.GUIStyle['buttoncolor'], command=self.Act_NodeEditDialogOption, extraArgs=[p_i])
+			self.GUI['NodeParamOption'][p_i].hide()
+			
 			p_i += 1
 
 		self.GUI['NodeEditDialogOK'] = DirectButton(text="OK", scale=0.07, pos=(-0.55,0,-0.55), parent=self.NodeEditDialog, frameSize=(-2, 2, -0.45, 0.9), frameColor=self.GUIStyle['buttoncolor'], command=self.Act_NodeEditDialogOK)
 		self.GUI['NodeEditDialogCancel'] = DirectButton(text="Cancel", scale=0.07, pos=(-0.2,0,-0.55), parent=self.NodeEditDialog, frameSize=(-2, 2, -0.45, 0.9), frameColor=self.GUIStyle['buttoncolor'], command=self.Act_NodeEditDialogCancel)
 		self.GUI['NodeEditDialogODelete'] = DirectButton(text="Delete Block", scale=0.07, pos=(0.5,0,-0.55), parent=self.NodeEditDialog, frameSize=(-4, 4, -0.45, 0.9), frameColor=self.GUIStyle['buttoncolor'], command=self.Act_NodeEditDialogDelete)
 		self.NodeEditDialog.hide()
+		
+		# --- Block Edit OptionList Menu
+		self.NodeEditDialogOptions = aspect2d.attachNewNode("NodeEditDialogOptionsScreen")
+		self.HUD_BuildListMenu(self.NodeEditDialogOptions, 'NodeParamOptionList', [-0.58,0,0.58], 8, 2.0)
+		self.NodeEditDialogOptions.hide()
+
 		
 		# --- New Project screen
 		self.NewScreen = self.aspect2d.attachNewNode("NewScreen")
@@ -480,6 +500,18 @@ class nWorkbench(ShowBase):
 				self.HUD_HideMenus()
 			else:
 				mmenu.hide()
+	def Act_ToggleTrueFalseCheckbox(self, state, checkbox):
+		print checkbox
+		if (state != checkbox['indicatorValue']): # This IF covers cases when this method is invoked manually
+			checkbox['indicatorValue'] = state
+			checkbox.setIndicatorValue()
+		
+		if state == 1:
+			checkbox['text'] = 'True'
+		else:
+			checkbox['text'] = 'False'
+		checkbox.resetFrameSize()
+	
 	def HUD_CreateSmallButton(self, btn_parent, btn_icon='', btn_pos=[0,0,0], btn_scale=1.0, btn_command=None, btn_cmd_args=[]):
 		btn = DirectButton(parent=btn_parent, image=mydir+'/res/button_48.png', image_scale=(1,1,1), image_pos=(0,0,0), relief=None, scale=btn_scale, pos=(btn_pos[0], btn_pos[1], btn_pos[2]), command=btn_command, extraArgs=btn_cmd_args)
 		btn.setTransparency(TransparencyAttrib.MAlpha)
@@ -956,21 +988,38 @@ class nWorkbench(ShowBase):
 			if (self.last_picked is not None) and (self.last_picked.getTag('type') == 'Block'): # right-clicked a block
 				
 				self.last_edited = self.last_picked
+				print self.last_edited
 				self.last_picked = None
 				self.last_selected = None
 				self.last_conn_selected = None
 				
 				params = self.last_edited.getParent().getPythonTag('savable')['template']['parameters']
+				print "refcount="+str( sys.getrefcount(params) )
 				p_i = 0
 				while (p_i < len(params)):
 					self.GUI['NodeParamLabel'][p_i]['text'] = params[p_i]['name']
 					self.GUI['NodeParamLabel'][p_i].show()
-					self.GUI['NodeParamEdit'][p_i].enterText(str(params[p_i]['value']))
-					self.GUI['NodeParamEdit'][p_i].show()
+					# Hide all types, overridden later
+					self.GUI['NodeParamEdit'][p_i].hide()
+					self.GUI['NodeParamCheck'][p_i].hide()
+					self.GUI['NodeParamOption'][p_i].hide()
+					# For each parameter type
+					if (params[p_i]['type'] == 'bool'):
+						self.Act_ToggleTrueFalseCheckbox(int(params[p_i]['value']), self.GUI['NodeParamCheck'][p_i])
+						self.GUI['NodeParamCheck'][p_i].show()
+					elif (params[p_i]['type'] == 'option'):
+						self.GUI['NodeParamOption'][p_i]['text'] = str(params[p_i]['value'])
+						self.GUI['NodeParamOption'][p_i]['extraArgs'] = [p_i, params[p_i]]
+						self.GUI['NodeParamOption'][p_i].show()
+					else:
+						self.GUI['NodeParamEdit'][p_i].enterText(str(params[p_i]['value']))
+						self.GUI['NodeParamEdit'][p_i].show()
 					p_i += 1
 				while (p_i < 4):
 					self.GUI['NodeParamLabel'][p_i].hide()
 					self.GUI['NodeParamEdit'][p_i].hide()
+					self.GUI['NodeParamCheck'][p_i].hide()
+					self.GUI['NodeParamOption'][p_i].hide()
 					p_i += 1
 				
 				self.I2d_HideMainWindow()
@@ -1000,6 +1049,7 @@ class nWorkbench(ShowBase):
 		self.ground = gnode
 		
 	def MakeBlockNode(self, blockItem, forceName=None):
+		blockItem = copy.deepcopy(blockItem)
 		# Params
 		blockItem['inputs'] = int(blockItem['inputs'])
 		blockItem['outputs'] = int(blockItem['outputs'])
@@ -1269,6 +1319,29 @@ class nWorkbench(ShowBase):
 		self.system_mode = MODE_NORMAL
 		self.dialog_mode = DIALOG_MAIN
 		
+	def Act_NodeEditDialogOption(self, p_i, params):
+		if 'options' not in params.keys():
+			return
+		option_list = []
+		for eitem in params['options']:
+			print eitem
+			option_list.append({
+				'name': eitem,
+				'icon': 'icon_blank.png',
+				'action':self.Act_NodeEditDialogSetOption,
+				'args':[p_i, eitem],
+				'menu_hide': None
+			})
+		self.HUD_UpdateListMenu('NodeParamOptionList', option_list, True)		
+		self.GUI['Menus']['NodeParamOptionList'].show()
+		self.NodeEditDialogOptions.show()
+		self.NodeEditDialog.hide()
+		
+	def Act_NodeEditDialogSetOption(self, p_i, option_value):
+		self.GUI['NodeParamOption'][p_i]['text'] = option_value
+		self.NodeEditDialogOptions.hide()
+		self.NodeEditDialog.show()
+		
 	def Act_NodeEditDialogOK(self):
 		m = self.last_edited.getParent()
 		savable = m.getPythonTag('savable')
@@ -1276,9 +1349,14 @@ class nWorkbench(ShowBase):
 		p_i = 0
 		while (p_i < plen):
 			try:
-				val = self.GUI['NodeParamEdit'][p_i].get(True) # True removes formatting characters
-				if (savable['template']['parameters'][p_i]['type'] == 'int'):
-					val = int(val)
+				if (savable['template']['parameters'][p_i]['type'] == 'bool'):
+					val = int(self.GUI['NodeParamCheck'][p_i]['indicatorValue'])
+				elif (savable['template']['parameters'][p_i]['type'] == 'option'):
+					val = self.GUI['NodeParamOption'][p_i]['text']
+				else:
+					val = self.GUI['NodeParamEdit'][p_i].get(True) # True removes formatting characters
+					if (savable['template']['parameters'][p_i]['type'] == 'int'):
+						val = int(val)
 				savable['template']['parameters'][p_i]['value'] = val
 			except: pass
 			p_i += 1
