@@ -14,6 +14,7 @@ import sys
 import os
 import json
 import copy
+import subprocess
 from math import sin, cos, radians
 from tkinter import TclError
 
@@ -119,6 +120,8 @@ class nWorkbench(ShowBase):
 		base.disableMouse()
 		base.mouseWatcherNode.set_modifier_buttons(ModifierButtons())
 		base.buttonThrowers[0].node().set_modifier_buttons(ModifierButtons())
+		
+		self.CustomCommands = nblocksfile.LoadCustomCommands()
 		
 
 		# ======================== 3D Interface
@@ -290,6 +293,14 @@ class nWorkbench(ShowBase):
 		]).hide()
 		self.HUD_CreateSmallButton(self.MainScreen['topleft'], 'icon_export.png', [0.1,0,-0.4], 0.06, self.Act_ToggleMenu, [self.GUI['Menus']['ExportMenu'], True])
 
+		# External command menu
+		_ext_cmds = []
+		for ecmd in self.CustomCommands:
+			_ext_cmds.append({ 'name':ecmd['name'], 'icon':'icon_run.png', 'action':self.Act_ExternalCommand, 'args':[ecmd['command']] })
+			
+		self.HUD_BuildMenu(self.MainScreen['topleft'], 'ExternalMenu', [0.2,0,-0.50], _ext_cmds).hide()
+		self.HUD_CreateSmallButton(self.MainScreen['topleft'], 'icon_run.png', [0.1,0,-0.55], 0.06, self.Act_ToggleMenu, [self.GUI['Menus']['ExternalMenu'], True])
+		
 		
 		self.GUI['FloorUp'] = self.HUD_CreateSmallButton(self.MainScreen['topright'], 'icon_up.png', [-0.1,0,-0.85], 0.06, self.Act_FloorUp)
 		self.GUI['FloorLabel'] = DirectLabel(text="1", text_pos=(0,-0.23,0), text_fg=(1,1,1,1), scale=0.1, pos=(-0.1,0,-1), parent=self.MainScreen['topright'], relief=None, image=mydir+'/res/squarefield_48.png', image_scale=0.65)
@@ -1567,6 +1578,13 @@ class nWorkbench(ShowBase):
 		self.Act_ShowDialogOK("The source code was exported to your clipboard.\nNow go to your file editor and paste.")
 		
 		pass
+		
+	def Act_ExternalCommand(self, command):
+		print "Running command: \""+str(command)+"\""
+		p = subprocess.Popen(command, stdout=subprocess.PIPE)
+		_out, _err = p.communicate()
+		print _out
+			
 			
 	# ========================
 	# Hardware Interfaces

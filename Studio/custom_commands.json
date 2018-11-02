@@ -1,0 +1,4 @@
+[
+	{"name":"Command 1", "command":"test.bat"},
+	{"name":"Name for 2", "command":"test.bat"}
+]

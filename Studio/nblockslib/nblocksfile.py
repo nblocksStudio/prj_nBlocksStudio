@@ -18,13 +18,18 @@ import tkFileDialog
 mydir = os.path.abspath(sys.path[0])
 
 defaultLibs = {
-	'ADC': 'adc',
-	'GPO': 'gpo',
-	'GPI': 'gpi',
-	'NOT': 'not',
-	'FlipFlop': 'flipflop',
-	'PWM': 'pwm',
-	'Ticker': 'ticker'
+	'ADC':         'adc',
+	'GPO':         'gpo',
+	'GPI':         'gpi',
+	'NOT':         'not',
+	'FlipFlop':    'flipflop',
+	'PWM':         'pwm',
+	'Ticker':      'ticker',
+	'AND':         'and',
+	'OR':          'or',
+	'SimpleSerial':'simpleserial',
+	'StringPack':  'stringpack'
+	
 }
 
 def ListProjects():
@@ -55,3 +60,16 @@ def SaveProjectToFile(filename, save_point):
 def RequestExportToFile():
 	filename = tkFileDialog.asksaveasfilename(initialdir = mydir+'/Export/', title = "Export to...",filetypes = (("ARM C++ Source Code","*.cpp"),("All files","*.*")))
 	return filename
+
+	
+def LoadCustomCommands():
+	if os.path.isfile('custom_commands.json'):
+		try:
+			with open('custom_commands.json') as data_file:    
+				user_data = json.load(data_file)
+				data_file.close()
+			return user_data
+		except:
+			return False
+	else:
+		return []
