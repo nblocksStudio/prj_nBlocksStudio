@@ -54,6 +54,8 @@ DIALOG_NEW = 5
 DIALOG_START = 6
 DIALOG_PARAMETERS = 7
 
+MAX_PARAMETERS = 20
+
 def setGeomTexture(Model, geomName, texture):
 	texAttrib = TextureAttrib.make(texture)
 	geomNode = Model.find('**/'+geomName).node()
@@ -342,24 +344,31 @@ class nWorkbench(ShowBase):
 		
 		self.GUI['NodeEditDialogFrame'] = DirectFrame(scale=0.06, pos=(0,0,0), parent=self.NodeEditDialog, relief=None)
 		self.HUD_BuildFrame(self.GUI['NodeEditDialogFrame'], [32,21], 1.0).setPos(-16,0,10.0)
+		
+		#DirectLabel(parent=self.NodeEditDialog, text="Parameters", text_fg=(1,1,1,1), text_align=TextNode.ALeft, scale=0.07, pos=(-0.75,0,0.48), relief=None)
+		#self.HUD_BuildListMenu(self.NodeEditDialog, 'NodeEditParameterList', [-0.85,0,0.32], 4, 1.0) # stored at self.GUI['Menus']['NodeEditParameterList']
+		param_frame = DirectScrolledFrame(parent=self.NodeEditDialog, canvasSize=(-0.85,0.85,-1,0.6), frameSize=(-0.9,0.9, -0.45,0.5), manageScrollBars=True, autoHideScrollBars=True, relief=None)
+		param_frame.setPos(0,0,0)
+		self.NodeEditDialogParameters = param_frame.getCanvas()
+		self.GUI['NodeEditDialogParamFrame'] = param_frame
 
-		# Paremeters
+		# Parameters
 		p_i = 0
 		self.GUI['NodeParamLabel'] = {}
 		self.GUI['NodeParamEdit'] = {}
 		self.GUI['NodeParamCheck'] = {}
 		self.GUI['NodeParamOption'] = {}
-		while (p_i < 4):
-			self.GUI['NodeParamLabel'][p_i] = DirectLabel(parent=self.NodeEditDialog, text="", text_fg=(1,1,1,1), text_align=TextNode.ALeft, scale=0.07, pos=(-0.7,0,0.46 - p_i*0.25), relief=None)
+		while (p_i < MAX_PARAMETERS):
+			self.GUI['NodeParamLabel'][p_i] = DirectLabel(parent=self.NodeEditDialogParameters, text="", text_fg=(1,1,1,1), text_align=TextNode.ALeft, scale=0.07, pos=(-0.7,0,0.46 - p_i*0.25), relief=None)
 			# Text parameter
-			self.GUI['NodeParamEdit'][p_i]  = DirectEntry(parent=self.NodeEditDialog, initialText='', scale=0.07, width=20, pos=(-0.7,0, 0.36 - p_i*0.25), frameColor=(1,1,1,0.7))
+			self.GUI['NodeParamEdit'][p_i]  = DirectEntry(parent=self.NodeEditDialogParameters, initialText='', scale=0.07, width=20, pos=(-0.7,0, 0.36 - p_i*0.25), frameColor=(1,1,1,0.7))
 			self.GUI['NodeParamEdit'][p_i].hide()
 			# Checkbox parameter
-			self.GUI['NodeParamCheck'][p_i]  = DirectCheckButton(parent=self.NodeEditDialog, text='False', scale=0.07, pos=(0.0,0, 0.36 - p_i*0.25), pad=(1,0), relief=None, command=self.Act_ToggleTrueFalseCheckbox)
+			self.GUI['NodeParamCheck'][p_i]  = DirectCheckButton(parent=self.NodeEditDialogParameters, text='False', scale=0.07, pos=(0.0,0, 0.36 - p_i*0.25), pad=(1,0), relief=None, command=self.Act_ToggleTrueFalseCheckbox)
 			self.GUI['NodeParamCheck'][p_i]['extraArgs'] = [self.GUI['NodeParamCheck'][p_i]]
 			self.GUI['NodeParamCheck'][p_i].hide()
 			# Option list
-			self.GUI['NodeParamOption'][p_i] = DirectButton(parent=self.NodeEditDialog, text="Selected Option", text_fg=(0,0,0,1), scale=0.07, pos=(0.0,0, 0.36 - p_i*0.25), frameSize=(-10,10,-0.6,1), frameColor=self.GUIStyle['buttoncolor'], command=self.Act_NodeEditDialogOption, extraArgs=[p_i])
+			self.GUI['NodeParamOption'][p_i] = DirectButton(parent=self.NodeEditDialogParameters, text="Selected Option", text_fg=(0,0,0,1), scale=0.07, pos=(0.0,0, 0.36 - p_i*0.25), frameSize=(-10,10,-0.6,1), frameColor=self.GUIStyle['buttoncolor'], command=self.Act_NodeEditDialogOption, extraArgs=[p_i])
 			self.GUI['NodeParamOption'][p_i].hide()
 			
 			p_i += 1
@@ -458,12 +467,15 @@ class nWorkbench(ShowBase):
 		
 	def Event_ResizeWindow(self):
 		winprop = self.win.getProperties()
+
 		self.win_width = winprop.getXSize()
+		self.win_height = winprop.getYSize()
+		self.screen_proportion = (self.win_width*1.0) / (self.win_height*1.0)
+		
 		has_to_resize = False
 		if self.win_width < 700:
 			self.win_width = 700
 			has_to_resize = True
-		self.win_height = winprop.getYSize()
 		if self.win_height < 500:
 			self.win_height = 500
 			has_to_resize = True
@@ -474,25 +486,25 @@ class nWorkbench(ShowBase):
 		if self.win_height > self.win_width: # portrait window, width defines sized
 			top = (self.win_height*1.0) / (self.win_width*1.0)
 			left = -1
-			ratio = 600.0 / self.win_width
+			self.win_ratio = 600.0 / self.win_width
 		else: # landscape window
 			top = 1
 			left = -(self.win_width*1.0) / (self.win_height*1.0)
-			ratio = 600.0 / self.win_height
+			self.win_ratio = 600.0 / self.win_height
 		right = -left
 		
 		self.MainScreen['topleft' ].setPos(left ,0,top )
-		self.MainScreen['topleft' ].setScale(ratio)
+		self.MainScreen['topleft' ].setScale(self.win_ratio)
 		self.MainScreen['topright'].setPos(right,0,top )
-		self.MainScreen['topright' ].setScale(ratio)
-		self.MainScreen['center' ].setScale(ratio)
-		self.LoadScreen.setScale(ratio)
-		self.QuitScreen.setScale(ratio)
-		self.StartScreen.setScale(ratio)
+		self.MainScreen['topright' ].setScale(self.win_ratio)
+		self.MainScreen['center' ].setScale(self.win_ratio)
+		self.LoadScreen.setScale(self.win_ratio)
+		self.QuitScreen.setScale(self.win_ratio)
+		self.StartScreen.setScale(self.win_ratio)
 		
 		self.win_proportion = (self.win_width*1.0) / (self.win_height*1.0)
 		
-		#print "Resize: "+str([self.win_width, self.win_height])+" TopLeft="+str([left,top])+" Ratio="+str(ratio)
+		#print "Resize: "+str([self.win_width, self.win_height])+" TopLeft="+str([left,top])+" Ratio="+str(self.win_ratio)+" WP:"+str(self.win_proportion)+" SP:"+str(self.screen_proportion)
 
 	#===================== Menu Building
 	def HUD_HideMenus(self):
@@ -852,10 +864,12 @@ class nWorkbench(ShowBase):
 			num = int(conn_object.getTag('num'))
 			conn_object.setColor(1,1,0,1)
 			#print "wp="+str(self.win_proportion)
+			#print "Cursor:"+str(cursor[0])+"  val:"+str(cursor[0]*self.win_proportion)
 			try:
 				self.GUI['PinHelper']['text'] = conn_object.getParent().getPythonTag('savable')['template']['labels'][dir][num]
 				self.GUI['PinHelper'].resetFrameSize()
-				self.GUI['PinHelper'].setPos(cursor[0]*self.win_proportion+0.15+0.01*len(self.GUI['PinHelper']['text']), 0, cursor[1]+0.05)
+				self.GUI['PinHelper'].setPos(cursor[0]*(self.win_proportion/self.win_ratio)+0.15+0.01*len(self.GUI['PinHelper']['text']), 0, cursor[1]/self.win_ratio+0.05)
+				#self.GUI['PinHelper'].setPos(cursor[0]*(self.win_proportion)+0.15+0.01*len(self.GUI['PinHelper']['text']), 0, cursor[1]+0.05)
 				self.GUI['PinHelper'].show()
 			except Exception as e:
 				#print "Error: "+str(e)
@@ -1004,35 +1018,9 @@ class nWorkbench(ShowBase):
 				self.last_selected = None
 				self.last_conn_selected = None
 				
-				params = self.last_edited.getParent().getPythonTag('savable')['template']['parameters']
-				print "refcount="+str( sys.getrefcount(params) )
-				p_i = 0
-				while (p_i < len(params)):
-					self.GUI['NodeParamLabel'][p_i]['text'] = params[p_i]['name']
-					self.GUI['NodeParamLabel'][p_i].show()
-					# Hide all types, overridden later
-					self.GUI['NodeParamEdit'][p_i].hide()
-					self.GUI['NodeParamCheck'][p_i].hide()
-					self.GUI['NodeParamOption'][p_i].hide()
-					# For each parameter type
-					if (params[p_i]['type'] == 'bool'):
-						self.Act_ToggleTrueFalseCheckbox(int(params[p_i]['value']), self.GUI['NodeParamCheck'][p_i])
-						self.GUI['NodeParamCheck'][p_i].show()
-					elif (params[p_i]['type'] == 'option'):
-						self.GUI['NodeParamOption'][p_i]['text'] = str(params[p_i]['value'])
-						self.GUI['NodeParamOption'][p_i]['extraArgs'] = [p_i, params[p_i]]
-						self.GUI['NodeParamOption'][p_i].show()
-					else:
-						self.GUI['NodeParamEdit'][p_i].enterText(str(params[p_i]['value']))
-						self.GUI['NodeParamEdit'][p_i].show()
-					p_i += 1
-				while (p_i < 4):
-					self.GUI['NodeParamLabel'][p_i].hide()
-					self.GUI['NodeParamEdit'][p_i].hide()
-					self.GUI['NodeParamCheck'][p_i].hide()
-					self.GUI['NodeParamOption'][p_i].hide()
-					p_i += 1
+				self.EditBlockNode( self.last_edited.getParent().getPythonTag('savable')['template']['parameters'] )
 				
+			
 				self.I2d_HideMainWindow()
 				self.NodeEditDialog.show()
 				self.system_mode = MODE_DIALOG
@@ -1137,6 +1125,45 @@ class nWorkbench(ShowBase):
 			return True
 		else:
 			return False
+			
+	def EditBlockNode(self, params):
+				
+		print "refcount="+str( sys.getrefcount(params) )
+
+		print "Params:\n"+str(params)
+		
+		num_params = len(params)
+		
+		esize = self.GUI['NodeEditDialogParamFrame']['canvasSize']
+		self.GUI['NodeEditDialogParamFrame']['canvasSize'] = (esize[0], esize[1], 0.4 - num_params*0.25, esize[3])
+		
+		p_i = 0
+		while (p_i < num_params):
+			self.GUI['NodeParamLabel'][p_i]['text'] = params[p_i]['name']
+			self.GUI['NodeParamLabel'][p_i].show()
+			# Hide all types, overridden later
+			self.GUI['NodeParamEdit'][p_i].hide()
+			self.GUI['NodeParamCheck'][p_i].hide()
+			self.GUI['NodeParamOption'][p_i].hide()
+			# For each parameter type
+			if (params[p_i]['type'] == 'bool'):
+				self.Act_ToggleTrueFalseCheckbox(int(params[p_i]['value']), self.GUI['NodeParamCheck'][p_i])
+				self.GUI['NodeParamCheck'][p_i].show()
+			elif (params[p_i]['type'] == 'option'):
+				self.GUI['NodeParamOption'][p_i]['text'] = str(params[p_i]['value'])
+				self.GUI['NodeParamOption'][p_i]['extraArgs'] = [p_i, params[p_i]]
+				self.GUI['NodeParamOption'][p_i].show()
+			else:
+				self.GUI['NodeParamEdit'][p_i].enterText(str(params[p_i]['value']))
+				self.GUI['NodeParamEdit'][p_i].show()
+			p_i += 1
+		while (p_i < MAX_PARAMETERS):
+			self.GUI['NodeParamLabel'][p_i].hide()
+			self.GUI['NodeParamEdit'][p_i].hide()
+			self.GUI['NodeParamCheck'][p_i].hide()
+			self.GUI['NodeParamOption'][p_i].hide()
+			p_i += 1
+			
 		
 	def MakeConnection(self, source_conn, target_conn):
 		if self.FindConnectionBetween(source_conn, target_conn, True) is False:
