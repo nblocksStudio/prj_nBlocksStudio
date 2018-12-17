@@ -1,0 +1,145 @@
+{
+    "Node Iterator": 18, 
+    "nBlockNode Connections": [
+        {
+            "source_output": 0, 
+            "target_node": "nBlockNode3_FlipFlop", 
+            "source_node": "nBlockNode0_Ticker", 
+            "target_input": 0
+        }, 
+        {
+            "source_output": 0, 
+            "target_node": "nBlockNode12_GPO", 
+            "source_node": "nBlockNode3_FlipFlop", 
+            "target_input": 0
+        }, 
+        {
+            "source_output": 0, 
+            "target_node": "nBlockNode13_FlipFlop", 
+            "source_node": "nBlockNode3_FlipFlop", 
+            "target_input": 0
+        }, 
+        {
+            "source_output": 0, 
+            "target_node": "nBlockNode12_GPO", 
+            "source_node": "nBlockNode13_FlipFlop", 
+            "target_input": 1
+        }, 
+        {
+            "source_output": 0, 
+            "target_node": "nBlockNode14_FlipFlop", 
+            "source_node": "nBlockNode13_FlipFlop", 
+            "target_input": 0
+        }, 
+        {
+            "source_output": 0, 
+            "target_node": "nBlockNode12_GPO", 
+            "source_node": "nBlockNode14_FlipFlop", 
+            "target_input": 2
+        }, 
+        {
+            "source_output": 0, 
+            "target_node": "nBlockNode15_FlipFlop", 
+            "source_node": "nBlockNode14_FlipFlop", 
+            "target_input": 0
+        }, 
+        {
+            "source_output": 0, 
+            "target_node": "nBlockNode12_GPO", 
+            "source_node": "nBlockNode15_FlipFlop", 
+            "target_input": 3
+        }
+    ], 
+    "nBlockNodes": [
+        {
+            "layer": 1, 
+            "name": "nBlockNode0_Ticker", 
+            "template": {
+                "inputs": 0, 
+                "name": "Ticker", 
+                "parameters": [], 
+                "outputs": 1
+            }, 
+            "pos": [
+                -36.914817810058594, 
+                17.093124389648438, 
+                0.0
+            ]
+        }, 
+        {
+            "layer": 1, 
+            "name": "nBlockNode13_FlipFlop", 
+            "template": {
+                "inputs": 1, 
+                "name": "FlipFlop", 
+                "parameters": [], 
+                "outputs": 1
+            }, 
+            "pos": [
+                0.30219459533691406, 
+                18.706863403320312, 
+                0.0
+            ]
+        }, 
+        {
+            "layer": 1, 
+            "name": "nBlockNode15_FlipFlop", 
+            "template": {
+                "inputs": 1, 
+                "name": "FlipFlop", 
+                "parameters": [], 
+                "outputs": 1
+            }, 
+            "pos": [
+                0.30219459533691406, 
+                -2.776123046875, 
+                0.0
+            ]
+        }, 
+        {
+            "layer": 1, 
+            "name": "nBlockNode3_FlipFlop", 
+            "template": {
+                "inputs": 1, 
+                "name": "FlipFlop", 
+                "parameters": [], 
+                "outputs": 1
+            }, 
+            "pos": [
+                -0.10124194622039795, 
+                29.196212768554688, 
+                0.0
+            ]
+        }, 
+        {
+            "layer": 1, 
+            "name": "nBlockNode12_GPO", 
+            "template": {
+                "inputs": 4, 
+                "name": "GPO", 
+                "parameters": [], 
+                "outputs": 0
+            }, 
+            "pos": [
+                43.36904525756836, 
+                19.110305786132812, 
+                0.0
+            ]
+        }, 
+        {
+            "layer": 1, 
+            "name": "nBlockNode14_FlipFlop", 
+            "template": {
+                "inputs": 1, 
+                "name": "FlipFlop", 
+                "parameters": [], 
+                "outputs": 1
+            }, 
+            "pos": [
+                0.5039130449295044, 
+                8.318389892578125, 
+                0.0
+            ]
+        }
+    ]
+}

@@ -1,0 +1,130 @@
+{
+    "Node Iterator": 3, 
+    "nBlockNode Connections": [
+        {
+            "source_output": 0, 
+            "target_node": "nBlockNode0_Counter", 
+            "source_node": "nBlockNode2_Ticker", 
+            "target_input": 0
+        }, 
+        {
+            "source_output": 0, 
+            "target_node": "nBlockNode1_Lcd", 
+            "source_node": "nBlockNode0_Counter", 
+            "target_input": 0
+        }
+    ], 
+    "nBlockNodes": [
+        {
+            "layer": 1, 
+            "name": "nBlockNode2_Ticker", 
+            "template": {
+                "inputs": 0, 
+                "labels": {
+                    "input": [], 
+                    "output": []
+                }, 
+                "name": "Ticker", 
+                "parameters": [
+                    {
+                        "default": 1000, 
+                        "type": "int", 
+                        "name": "Interval (ms)", 
+                        "value": 1
+                    }
+                ], 
+                "outputs": 1
+            }, 
+            "pos": [
+                -36.212615966796875, 
+                23.376754760742188, 
+                0.0
+            ]
+        }, 
+        {
+            "layer": 1, 
+            "name": "nBlockNode0_Counter", 
+            "template": {
+                "inputs": 2, 
+                "labels": {
+                    "input": [], 
+                    "output": []
+                }, 
+                "name": "Counter", 
+                "parameters": [
+                    {
+                        "default": 0, 
+                        "type": "int", 
+                        "name": "Auto reset value", 
+                        "value": 9999, 
+                        "options": [
+                            ""
+                        ]
+                    }
+                ], 
+                "outputs": 1
+            }, 
+            "pos": [
+                -7.437092304229736, 
+                11.9381103515625, 
+                0.0
+            ]
+        }, 
+        {
+            "layer": 1, 
+            "name": "nBlockNode1_Lcd", 
+            "template": {
+                "inputs": 1, 
+                "labels": {
+                    "input": [], 
+                    "output": []
+                }, 
+                "name": "Lcd", 
+                "parameters": [
+                    {
+                        "default": "", 
+                        "type": "raw", 
+                        "name": "SDA", 
+                        "value": "p28", 
+                        "options": [
+                            ""
+                        ]
+                    }, 
+                    {
+                        "default": "", 
+                        "type": "raw", 
+                        "name": "SCL", 
+                        "value": "p27", 
+                        "options": [
+                            ""
+                        ]
+                    }, 
+                    {
+                        "default": "", 
+                        "type": "raw", 
+                        "name": "Slave Address", 
+                        "value": "0x38", 
+                        "options": [
+                            ""
+                        ]
+                    }, 
+                    {
+                        "default": 0, 
+                        "type": "int", 
+                        "name": "leading Zeros", 
+                        "value": 0, 
+                        "options": [
+                            ""
+                        ]
+                    }
+                ], 
+                "outputs": 1
+            }, 
+            "pos": [
+                18.905805587768555, 
+                11.592071533203125, 
+                0.0
+            ]
+        }
+    ]
+}

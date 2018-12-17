@@ -1,0 +1,147 @@
+{
+    "Node Iterator": 4, 
+    "nBlockNode Connections": [
+        {
+            "source_output": 0, 
+            "target_node": "nBlockNode0_ADC", 
+            "source_node": "nBlockNode1_Ticker", 
+            "target_input": 0
+        }, 
+        {
+            "source_output": 0, 
+            "target_node": "nBlockNode3_SimpleSerial", 
+            "source_node": "nBlockNode2_StringPack", 
+            "target_input": 0
+        }, 
+        {
+            "source_output": 0, 
+            "target_node": "nBlockNode2_StringPack", 
+            "source_node": "nBlockNode0_ADC", 
+            "target_input": 0
+        }
+    ], 
+    "nBlockNodes": [
+        {
+            "layer": 2, 
+            "name": "nBlockNode1_Ticker", 
+            "template": {
+                "inputs": 0, 
+                "labels": {
+                    "input": [], 
+                    "output": []
+                }, 
+                "name": "Ticker", 
+                "parameters": [
+                    {
+                        "default": 1000, 
+                        "type": "int", 
+                        "name": "Interval (ms)", 
+                        "value": 1000
+                    }
+                ], 
+                "outputs": 1
+            }, 
+            "pos": [
+                -32.4835205078125, 
+                21.024200439453125, 
+                25.0
+            ]
+        }, 
+        {
+            "layer": 3, 
+            "name": "nBlockNode2_StringPack", 
+            "template": {
+                "inputs": 1, 
+                "labels": {
+                    "input": [], 
+                    "output": []
+                }, 
+                "name": "StringPack", 
+                "parameters": [
+                    {
+                        "default": "Value: %d\\n", 
+                        "type": "string", 
+                        "name": "Format string", 
+                        "value": "Value: %d\\n"
+                    }
+                ], 
+                "outputs": 1
+            }, 
+            "pos": [
+                11.470329284667969, 
+                1.7963409423828125, 
+                50.0
+            ]
+        }, 
+        {
+            "layer": 3, 
+            "name": "nBlockNode3_SimpleSerial", 
+            "template": {
+                "inputs": 1, 
+                "labels": {
+                    "input": [], 
+                    "output": []
+                }, 
+                "name": "SimpleSerial", 
+                "parameters": [
+                    {
+                        "default": "P2_0", 
+                        "type": "raw", 
+                        "name": "Pin TX", 
+                        "value": "P2_0"
+                    }, 
+                    {
+                        "default": "P2_1", 
+                        "type": "raw", 
+                        "name": "Pin RX", 
+                        "value": "P2_1"
+                    }
+                ], 
+                "outputs": 1
+            }, 
+            "pos": [
+                37.65617752075195, 
+                17.537490844726562, 
+                50.0
+            ]
+        }, 
+        {
+            "layer": 1, 
+            "name": "nBlockNode0_ADC", 
+            "template": {
+                "inputs": 1, 
+                "labels": {
+                    "input": [
+                        "Trigger"
+                    ], 
+                    "output": [
+                        "ADC Out"
+                    ]
+                }, 
+                "name": "ADC", 
+                "parameters": [
+                    {
+                        "default": "P0_10", 
+                        "type": "option", 
+                        "name": "Pin", 
+                        "value": "P0_10", 
+                        "options": [
+                            "pin_D1", 
+                            "pin_D2", 
+                            "pin_D3", 
+                            "pin_D4", 
+                            "pin_D5", 
+                            "pin_D6"
+                        ]
+                    }
+                ], 
+                "outputs": 1
+            }, 
+            "pos": [
+                5.866115093231201, 
+                49.61541748046875, 
+                0.0
+            ]
+        }
+    ]
+}

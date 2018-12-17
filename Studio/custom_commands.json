@@ -1,4 +1,11 @@
 [
-	{"name":"Command 1", "command":"test.bat"},
-	{"name":"Name for 2", "command":"test.bat"}
+	{"name":"Compile LPC1768 [n-Bed]", "command":"LPC1768.cmd"},
+	{"name":"Compile LPC11u35 [n-Dap]", "command":"LPC11u35.cmd"},
+	{"name":"Compile L151 [n-L15 old]", "command":"L151.cmd"},
+	{"name":"Compile L152RE [n-L15, n-CPU48]", "command":"L152RE.cmd"},
+	{"name":"Compile L432KC [n-LP]", "command":"L432KC.cmd"},
+	{"name":"Compile L476RG [n-CPU48]", "command":"L432KC.cmd"},
+	{"name":"Compile nRF52 n-BLE]", "command":"nRF52.cmd"},
+	{"name":"defined in custom_commands.json", "command":"test.bat"}
 ]
+

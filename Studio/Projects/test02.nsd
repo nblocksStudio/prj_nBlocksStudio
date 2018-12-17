@@ -1,0 +1,59 @@
+{
+    "Node Iterator": 2, 
+    "nBlockNode Connections": [
+        {
+            "source_output": 0, 
+            "target_node": "nBlockNode1_GPO", 
+            "source_node": "nBlockNode0_GPI", 
+            "target_input": 0
+        }, 
+        {
+            "source_output": 1, 
+            "target_node": "nBlockNode1_GPO", 
+            "source_node": "nBlockNode0_GPI", 
+            "target_input": 1
+        }, 
+        {
+            "source_output": 2, 
+            "target_node": "nBlockNode1_GPO", 
+            "source_node": "nBlockNode0_GPI", 
+            "target_input": 2
+        }, 
+        {
+            "source_output": 3, 
+            "target_node": "nBlockNode1_GPO", 
+            "source_node": "nBlockNode0_GPI", 
+            "target_input": 3
+        }
+    ], 
+    "nBlockNodes": [
+        {
+            "layer": 1, 
+            "name": "nBlockNode1_GPO", 
+            "template": {
+                "inputs": 4, 
+                "name": "GPO", 
+                "outputs": 0
+            }, 
+            "pos": [
+                20.11637306213379, 
+                16.7562255859375, 
+                0.0
+            ]
+        }, 
+        {
+            "layer": 1, 
+            "name": "nBlockNode0_GPI", 
+            "template": {
+                "inputs": 0, 
+                "name": "GPI", 
+                "outputs": 4
+            }, 
+            "pos": [
+                -15.954036712646484, 
+                16.611465454101562, 
+                0.0
+            ]
+        }
+    ]
+}

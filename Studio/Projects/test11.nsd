@@ -1,0 +1,97 @@
+{
+    "Node Iterator": 8, 
+    "nBlockNode Connections": [
+        {
+            "source_output": 0, 
+            "target_node": "nBlockNode7_DelayBuffer", 
+            "source_node": "nBlockNode4_GPI", 
+            "target_input": 0
+        }, 
+        {
+            "source_output": 0, 
+            "target_node": "nBlockNode6_GPO", 
+            "source_node": "nBlockNode7_DelayBuffer", 
+            "target_input": 0
+        }
+    ], 
+    "nBlockNodes": [
+        {
+            "layer": 1, 
+            "name": "nBlockNode7_DelayBuffer", 
+            "template": {
+                "inputs": 1, 
+                "labels": {
+                    "input": [], 
+                    "output": []
+                }, 
+                "name": "DelayBuffer", 
+                "parameters": [], 
+                "outputs": 1
+            }, 
+            "pos": [
+                -6.133058547973633, 
+                8.4940185546875, 
+                0.0
+            ]
+        }, 
+        {
+            "layer": 1, 
+            "name": "nBlockNode4_GPI", 
+            "template": {
+                "inputs": 0, 
+                "labels": {
+                    "input": [], 
+                    "output": [
+                        "Change", 
+                        "Rise", 
+                        "Fall"
+                    ]
+                }, 
+                "name": "GPI", 
+                "parameters": [
+                    {
+                        "default": "P0_10", 
+                        "type": "raw", 
+                        "name": "Pin", 
+                        "value": "P0_10"
+                    }
+                ], 
+                "outputs": 3
+            }, 
+            "pos": [
+                -32.3940544128418, 
+                19.521484375, 
+                0.0
+            ]
+        }, 
+        {
+            "layer": 1, 
+            "name": "nBlockNode6_GPO", 
+            "template": {
+                "inputs": 1, 
+                "labels": {
+                    "input": [], 
+                    "output": []
+                }, 
+                "name": "GPO", 
+                "parameters": [
+                    {
+                        "default": "P1_18", 
+                        "type": "raw", 
+                        "name": "Pin", 
+                        "value": "P1_18", 
+                        "options": [
+                            ""
+                        ]
+                    }
+                ], 
+                "outputs": 0
+            }, 
+            "pos": [
+                19.810321807861328, 
+                18.4805908203125, 
+                0.0
+            ]
+        }
+    ]
+}
